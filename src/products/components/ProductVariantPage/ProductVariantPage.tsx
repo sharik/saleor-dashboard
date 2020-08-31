@@ -60,6 +60,8 @@ interface ProductVariantPageProps {
   placeholderImage?: string;
   header: string;
   warehouses: WarehouseFragment[];
+  onAttributeRemove: any;
+  onAttributeAdd: () => void;
   onAdd();
   onBack();
   onDelete();
@@ -82,7 +84,9 @@ const ProductVariantPage: React.FC<ProductVariantPageProps> = ({
   onDelete,
   onImageSelect,
   onSubmit,
-  onVariantClick
+  onVariantClick,
+  onAttributeAdd,
+  onAttributeRemove
 }) => {
   const attributeInput = React.useMemo(
     () => getAttributeInputFromVariant(variant),
@@ -196,6 +200,8 @@ const ProductVariantPage: React.FC<ProductVariantPageProps> = ({
                       disabled={loading}
                       errors={errors}
                       onChange={handleAttributeChange}
+                      onRemove={onAttributeRemove}
+                      onEdit={onAttributeAdd}
                     />
                     <CardSpacer />
                     <ProductVariantImages
