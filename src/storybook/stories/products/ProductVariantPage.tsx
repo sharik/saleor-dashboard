@@ -19,6 +19,8 @@ storiesOf("Views / Products / Product variant details", module)
       errors={[]}
       variant={variant}
       onAdd={() => undefined}
+      onAttributeAdd={() => undefined}
+      onAttributeRemove={() => undefined}
       onBack={() => undefined}
       onDelete={undefined}
       onImageSelect={() => undefined}
@@ -37,6 +39,8 @@ storiesOf("Views / Products / Product variant details", module)
       onBack={() => undefined}
       placeholderImage={placeholderImage}
       onAdd={() => undefined}
+      onAttributeAdd={() => undefined}
+      onAttributeRemove={() => undefined}
       onDelete={undefined}
       onImageSelect={() => undefined}
       onSubmit={() => undefined}
@@ -51,6 +55,8 @@ storiesOf("Views / Products / Product variant details", module)
       header={variant.name || variant.sku}
       variant={variant}
       onAdd={() => undefined}
+      onAttributeAdd={() => undefined}
+      onAttributeRemove={() => undefined}
       onBack={() => undefined}
       onDelete={undefined}
       onImageSelect={() => undefined}
