@@ -60,7 +60,7 @@ interface ProductVariantPageProps {
   placeholderImage?: string;
   header: string;
   warehouses: WarehouseFragment[];
-  onAttributeRemove: any;
+  onAttributeRemove: (id: string) => void;
   onAttributeAdd: () => void;
   onAdd();
   onBack();
@@ -195,15 +195,6 @@ const ProductVariantPage: React.FC<ProductVariantPageProps> = ({
                     />
                   </div>
                   <div>
-                    <ProductVariantAttributes
-                      attributes={attributes}
-                      disabled={loading}
-                      errors={errors}
-                      onChange={handleAttributeChange}
-                      onRemove={onAttributeRemove}
-                      onEdit={onAttributeAdd}
-                    />
-                    <CardSpacer />
                     <ProductVariantImages
                       disabled={loading}
                       images={images}
@@ -224,6 +215,15 @@ const ProductVariantPage: React.FC<ProductVariantPageProps> = ({
                       costPrice={data.costPrice}
                       loading={loading}
                       onChange={change}
+                    />
+                    <CardSpacer />
+                    <ProductVariantAttributes
+                      attributes={attributes}
+                      disabled={loading}
+                      errors={errors}
+                      onChange={handleAttributeChange}
+                      onRemove={onAttributeRemove}
+                      onEdit={onAttributeAdd}
                     />
                     <CardSpacer />
                     <ProductShipping

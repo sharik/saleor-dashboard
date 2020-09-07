@@ -1,9 +1,17 @@
 import NotFoundPage from "@saleor/components/NotFoundPage";
 import { WindowTitle } from "@saleor/components/WindowTitle";
+import { DEFAULT_INITIAL_SEARCH_DATA } from "@saleor/config";
 import useNavigator from "@saleor/hooks/useNavigator";
 import useNotifier from "@saleor/hooks/useNotifier";
 import useShop from "@saleor/hooks/useShop";
 import { commonMessages } from "@saleor/intl";
+import AssignAttributeDialog from "@saleor/productTypes/components/AssignAttributeDialog";
+import useAvailableAttributeSearch from "@saleor/productTypes/hooks/useAvailableAttributeSearch";
+import {
+  useAssignAttributeMutation,
+  useUnassignAttributeMutation
+} from "@saleor/productTypes/mutations";
+import { AttributeTypeEnum } from "@saleor/types/globalTypes";
 import createMetadataCreateHandler from "@saleor/utils/handlers/metadataCreateHandler";
 import {
   useMetadataUpdate,
@@ -19,14 +27,22 @@ import ProductVariantCreatePage, {
 } from "../components/ProductVariantCreatePage";
 import { useVariantCreateMutation } from "../mutations";
 import { useProductVariantCreateQuery } from "../queries";
-import { productListUrl, productUrl, productVariantEditUrl } from "../urls";
+import {
+  productListUrl,
+  productUrl,
+  productVariantAddUrl,
+  productVariantEditUrl,
+  ProductVariantEditUrlQueryParams
+} from "../urls";
 
 interface ProductVariantCreateProps {
   productId: string;
+  params: ProductVariantEditUrlQueryParams;
 }
 
 export const ProductVariant: React.FC<ProductVariantCreateProps> = ({
-  productId
+  productId,
+  params
 }) => {
   const navigate = useNavigator();
   const notify = useNotifier();
@@ -39,7 +55,11 @@ export const ProductVariant: React.FC<ProductVariantCreateProps> = ({
     }
   });
 
-  const { data, loading: productLoading } = useProductVariantCreateQuery({
+  const {
+    data,
+    loading: productLoading,
+    refetch
+  } = useProductVariantCreateQuery({
     displayLoader: true,
     variables: { id: productId }
   });
@@ -62,6 +82,40 @@ export const ProductVariant: React.FC<ProductVariantCreateProps> = ({
   });
   const [updateMetadata] = useMetadataUpdate({});
   const [updatePrivateMetadata] = usePrivateMetadataUpdate({});
+
+  const closeModal = () => navigate(productVariantAddUrl(productId), true);
+
+  const [
+    unassignAttribute,
+    unassignAttributeOpts
+  ] = useUnassignAttributeMutation({
+    onCompleted: data => {
+      if (data.attributeUnassign.errors.length === 0) {
+        notify({
+          status: "success",
+          text: intl.formatMessage({
+            defaultMessage: "Attribute removed"
+          })
+        });
+        refetch();
+      }
+    }
+  });
+  const [assignAttribute, assignAttributeOpts] = useAssignAttributeMutation({
+    onCompleted: data => {
+      if (data.attributeAssign.errors.length === 0) {
+        refetch();
+        closeModal();
+      }
+    }
+  });
+
+  const { loadMore, search, result } = useAvailableAttributeSearch({
+    variables: {
+      ...DEFAULT_INITIAL_SEARCH_DATA,
+      id: data?.product?.productType?.id || ""
+    }
+  });
 
   const product = data?.product;
 
@@ -104,7 +158,29 @@ export const ProductVariant: React.FC<ProductVariantCreateProps> = ({
   const handleVariantClick = (id: string) =>
     navigate(productVariantEditUrl(productId, id));
 
-  const disableForm = productLoading || variantCreateResult.loading;
+  const handleAttributeRemove = (attrId: string) =>
+    unassignAttribute({
+      variables: {
+        id: data?.product.productType.id,
+        ids: [attrId]
+      }
+    });
+
+  const handleAssignAttribute = () =>
+    assignAttribute({
+      variables: {
+        id: data?.product.productType.id,
+        operations: params.ids.map(id => ({
+          id,
+          type: AttributeTypeEnum.VARIANT
+        }))
+      }
+    });
+
+  const disableForm =
+    productLoading ||
+    variantCreateResult.loading ||
+    unassignAttributeOpts?.loading;
 
   return (
     <>
@@ -113,6 +189,40 @@ export const ProductVariant: React.FC<ProductVariantCreateProps> = ({
           defaultMessage: "Create variant",
           description: "window title"
         })}
+      />
+      <AssignAttributeDialog
+        attributes={result?.data?.productType?.availableAttributes.edges.map(
+          edge => edge.node
+        )}
+        confirmButtonState={assignAttributeOpts.status}
+        errors={
+          assignAttributeOpts?.data?.attributeAssign?.errors.map(
+            err => err.message
+          ) || []
+        }
+        loading={assignAttributeOpts.loading}
+        onClose={closeModal}
+        onSubmit={handleAssignAttribute}
+        onFetch={search}
+        onFetchMore={loadMore}
+        onOpen={result.refetch}
+        hasMore={
+          !!result?.data?.productType?.availableAttributes.pageInfo.hasNextPage
+        }
+        open={params.action === "assign-attribute"}
+        selected={params?.ids || []}
+        onToggle={attributeId => {
+          const ids = params?.ids || [];
+          navigate(
+            productVariantAddUrl(productId, {
+              ...params,
+              ids: ids.includes(attributeId)
+                ? params.ids.filter(selectedId => selectedId !== attributeId)
+                : [...ids, attributeId]
+            })
+          );
+        }}
+        type="edit"
       />
       <ProductVariantCreatePage
         currencySymbol={shop?.defaultCurrency}
@@ -131,6 +241,15 @@ export const ProductVariant: React.FC<ProductVariantCreateProps> = ({
           warehouses.data?.warehouses.edges.map(edge => edge.node) || []
         }
         weightUnit={shop?.defaultWeightUnit}
+        onAttributeAdd={() =>
+          navigate(
+            productVariantAddUrl(productId, {
+              ...params,
+              action: "assign-attribute"
+            })
+          )
+        }
+        onAttributeRemove={handleAttributeRemove}
       />
     </>
   );
