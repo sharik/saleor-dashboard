@@ -17,6 +17,7 @@ export const shopFragment = gql`
       code
       country
     }
+    automaticFulfillmentDigitalProducts
     customerSetPasswordUrl
     defaultMailSenderAddress
     defaultMailSenderName

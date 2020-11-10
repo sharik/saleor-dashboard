@@ -128,6 +128,8 @@ export const SiteSettings: React.FC<SiteSettingsProps> = ({ params }) => {
                             name: data.name
                           },
                           shopSettingsInput: {
+                            automaticFulfillmentDigitalProducts:
+                              data.automaticFulfillmentDigitalProducts,
                             customerSetPasswordUrl: data.customerSetPasswordUrl,
                             defaultMailSenderAddress:
                               data.defaultMailSenderAddress,

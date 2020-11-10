@@ -10,6 +10,7 @@ export const shop: SiteSettings_shop = {
       name: AuthorizationKeyType.FACEBOOK
     }
   ],
+  automaticFulfillmentDigitalProducts: false,
   companyAddress: {
     __typename: "Address",
     city: "Kenstad",

@@ -12,11 +12,13 @@ import Hr from "@saleor/components/Hr";
 import { getFormErrors } from "@saleor/utils/errors";
 import { ShopErrorFragment } from "@saleor/siteSettings/types/ShopErrorFragment";
 import getShopErrorMessage from "@saleor/utils/errors/shop";
+import { ControlledCheckbox } from "@saleor/components/ControlledCheckbox";
 
 export interface SiteSettingsMailingFormData {
   defaultMailSenderName: string;
   defaultMailSenderAddress: string;
   customerSetPasswordUrl: string;
+  automaticFulfillmentDigitalProducts: boolean;
 }
 interface SiteSettingsMailingProps {
   data: SiteSettingsMailingFormData;
@@ -130,6 +132,20 @@ const SiteSettingsMailing: React.FC<SiteSettingsMailingProps> = props => {
             })
           }
           value={data.customerSetPasswordUrl}
+          onChange={onChange}
+        />
+        <FormSpacer />
+        <Hr />
+        <FormSpacer />
+        <ControlledCheckbox
+          checked={data.automaticFulfillmentDigitalProducts}
+          disabled={disabled}
+          label={intl.formatMessage({
+            defaultMessage:
+              "Enable automatic fulfillment for all digital products.",
+            description: "switch button"
+          })}
+          name="automaticFulfillmentDigitalProducts"
           onChange={onChange}
         />
       </CardContent>

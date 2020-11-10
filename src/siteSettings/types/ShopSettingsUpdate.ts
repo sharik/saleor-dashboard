@@ -56,6 +56,7 @@ export interface ShopSettingsUpdate_shopSettingsUpdate_shop_domain {
 export interface ShopSettingsUpdate_shopSettingsUpdate_shop {
   __typename: "Shop";
   authorizationKeys: (ShopSettingsUpdate_shopSettingsUpdate_shop_authorizationKeys | null)[];
+  automaticFulfillmentDigitalProducts: boolean;
   companyAddress: ShopSettingsUpdate_shopSettingsUpdate_shop_companyAddress | null;
   countries: (ShopSettingsUpdate_shopSettingsUpdate_shop_countries | null)[];
   customerSetPasswordUrl: string | null;

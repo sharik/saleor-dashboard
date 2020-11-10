@@ -119,6 +119,10 @@ const SiteSettingsPage: React.FC<SiteSettingsPageProps> = props => {
   };
   const initialForm: SiteSettingsPageFormData = {
     ...initialFormAddress,
+    automaticFulfillmentDigitalProducts: maybe(
+      () => shop.automaticFulfillmentDigitalProducts,
+      false
+    ),
     customerSetPasswordUrl: maybe(() => shop.customerSetPasswordUrl, ""),
     defaultMailSenderAddress: maybe(() => shop.defaultMailSenderAddress, ""),
     defaultMailSenderName: maybe(() => shop.defaultMailSenderName, ""),
