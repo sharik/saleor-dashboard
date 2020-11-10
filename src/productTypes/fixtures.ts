@@ -468,9 +468,8 @@ export const attributes: SearchProductTypes_search_edges_node_productAttributes[
   }
 ].map(edge => edge.node);
 
-export const productTypes: Array<
-  SearchProductTypes_search_edges_node & ProductTypeList_productTypes_edges_node
-> = [
+export const productTypes: Array<SearchProductTypes_search_edges_node &
+  ProductTypeList_productTypes_edges_node> = [
   {
     __typename: "ProductType" as "ProductType",
     hasVariants: true,
@@ -549,6 +548,7 @@ export const productType: ProductTypeDetails_productType = {
   __typename: "ProductType" as "ProductType",
   hasVariants: false,
   id: "UHJvZHVjdFR5cGU6NQ==",
+  isDigital: false,
   isShippingRequired: false,
   name: "E-books",
   productAttributes: [

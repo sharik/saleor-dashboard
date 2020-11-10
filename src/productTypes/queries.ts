@@ -19,6 +19,7 @@ export const productTypeFragment = gql`
     name
     hasVariants
     isShippingRequired
+    isDigital
     taxType {
       description
       taxCode

@@ -51,6 +51,7 @@ export interface ProductTypeUpdate_productTypeUpdate_productType {
   id: string;
   name: string;
   hasVariants: boolean;
+  isDigital: boolean;
   isShippingRequired: boolean;
   taxType: ProductTypeUpdate_productTypeUpdate_productType_taxType | null;
   productAttributes: (ProductTypeUpdate_productTypeUpdate_productType_productAttributes | null)[] | null;
