@@ -76,6 +76,8 @@ export interface OrderDetails_order_fulfillments_lines_orderLine {
   __typename: "OrderLine";
   id: string;
   isShippingRequired: boolean;
+  isDigital?: boolean;
+  digitalFileUrl?: string;
   productName: string;
   productSku: string;
   quantity: number;

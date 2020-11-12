@@ -31,11 +31,13 @@ import ResponsiveTable from "@saleor/components/ResponsiveTable";
 import { Theme, makeStyles } from "@material-ui/core/styles";
 import { update } from "@saleor/utils/lists";
 import ControlledCheckbox from "@saleor/components/ControlledCheckbox";
-import { renderCollection } from "@saleor/misc";
+import { maybe, renderCollection } from "@saleor/misc";
 import Skeleton from "@saleor/components/Skeleton";
 import AppHeader from "@saleor/components/AppHeader";
 import { FulfillOrder_orderFulfill_errors } from "@saleor/orders/types/FulfillOrder";
 import { CSSProperties } from "@material-ui/styles";
+import Button from "@material-ui/core/Button";
+import { useOrderLineUpdateDigital } from "@saleor/orders/mutations";
 
 type ClassKey =
   | "actionBar"
@@ -49,6 +51,7 @@ type ClassKey =
   | "full"
   | "quantityInnerInput"
   | "quantityInnerInputNoRemaining"
+  | "fileField"
   | "remainingQuantity";
 const useStyles = makeStyles<Theme, OrderFulfillPageProps, ClassKey>(
   theme => {
@@ -94,6 +97,9 @@ const useStyles = makeStyles<Theme, OrderFulfillPageProps, ClassKey>(
       error: {
         color: theme.palette.error.main
       },
+      fileField: {
+        display: "none"
+      },
       full: {
         fontWeight: 600
       },
@@ -108,6 +114,7 @@ const useStyles = makeStyles<Theme, OrderFulfillPageProps, ClassKey>(
         color: theme.palette.text.secondary,
         whiteSpace: "nowrap"
       },
+
       table: {
         "&&": {
           tableLayout: "fixed"
@@ -179,6 +186,39 @@ const OrderFulfillPage: React.FC<OrderFulfillPageProps> = props => {
       }))
   );
 
+  const hasDigital = order?.lines.filter(line => line.isDigital).length > 0;
+  const upload = React.useRef(null);
+
+  const [orderLineUpdateDigital] = useOrderLineUpdateDigital({
+    onCompleted: data => {
+      if (data.orderLineUpdateDigitalContent.errors.length === 0) {
+        order.lines.forEach(line => {
+          if (line.id === data.orderLineUpdateDigitalContent.line.id) {
+            line.isDigital = data.orderLineUpdateDigitalContent.line.isDigital;
+            line.digitalFileUrl =
+              data.orderLineUpdateDigitalContent.line.digitalFileUrl;
+          }
+        });
+      }
+    }
+  });
+
+  const handleUpload = function(line, fileObj) {
+    const reader = new FileReader();
+    reader.onload = event => {
+      orderLineUpdateDigital({
+        variables: {
+          id: line.id,
+          input: {
+            file: event.target.result as string,
+            name: fileObj.name
+          }
+        }
+      });
+    };
+    reader.readAsDataURL(fileObj);
+  };
+
   const handleSubmit = (formData: OrderFulfillFormData) =>
     onSubmit({
       ...formData,
@@ -236,6 +276,14 @@ const OrderFulfillPage: React.FC<OrderFulfillPageProps> = props => {
                         description="product's sku"
                       />
                     </TableCell>
+                    {hasDigital && (
+                      <TableCell className={classes.colSku}>
+                        <FormattedMessage
+                          defaultMessage="Digital File"
+                          description="digital file"
+                        />
+                      </TableCell>
+                    )}
                     {warehouses?.map(warehouse => (
                       <TableCell
                         key={warehouse.id}
@@ -268,6 +316,11 @@ const OrderFulfillPage: React.FC<OrderFulfillPageProps> = props => {
                             <TableCell className={classes.colSku}>
                               <Skeleton />
                             </TableCell>
+                            {hasDigital && (
+                              <TableCell className={classes.colSku}>
+                                <Skeleton />
+                              </TableCell>
+                            )}
                             {warehouses?.map(warehouse => (
                               <TableCell
                                 className={classes.colQuantity}
@@ -283,6 +336,11 @@ const OrderFulfillPage: React.FC<OrderFulfillPageProps> = props => {
                           </TableRow>
                         );
                       }
+
+                      const hasDigitalError = !!errors?.find(
+                        err =>
+                          err.code === OrderErrorCode.MISSED_DIGITAL_CONTENT
+                      );
 
                       const remainingQuantity = getRemainingQuantity(line);
                       const quantityToFulfill = formsetData[
@@ -314,6 +372,47 @@ const OrderFulfillPage: React.FC<OrderFulfillPageProps> = props => {
                           <TableCell className={classes.colSku}>
                             {line.variant.sku}
                           </TableCell>
+                          {hasDigital && (
+                            <TableCell
+                              className={classNames({
+                                [classes.colSku]: true,
+                                [classes.error]: hasDigitalError
+                              })}
+                            >
+                              {maybe(() => line.isDigital) && (
+                                <>
+                                  <Button
+                                    onClick={() => upload.current.click()}
+                                    variant="text"
+                                    color="primary"
+                                    data-tc="button-upload"
+                                    className={classNames({
+                                      [classes.colSku]: true,
+                                      [classes.error]: hasDigitalError
+                                    })}
+                                  >
+                                    {maybe(() => !line.digitalFileUrl)
+                                      ? "Upload"
+                                      : "Edit"}
+                                  </Button>
+
+                                  <input
+                                    className={classes.fileField}
+                                    id={maybe(() => line.id)}
+                                    onChange={event =>
+                                      handleUpload(
+                                        line,
+                                        event.target.files.item(0)
+                                      )
+                                    }
+                                    type="file"
+                                    ref={upload}
+                                    accept="image/*,application/pdf"
+                                  />
+                                </>
+                              )}
+                            </TableCell>
+                          )}
                           {warehouses?.map(warehouse => {
                             const warehouseStock = line.variant.stocks.find(
                               stock => stock.warehouse.id === warehouse.id
@@ -430,7 +529,7 @@ const OrderFulfillPage: React.FC<OrderFulfillPageProps> = props => {
               </ResponsiveTable>
               <CardActions className={classes.actionBar}>
                 <ControlledCheckbox
-                  checked={data.sendInfo}
+                  checked={hasDigital ? false : data.sendInfo}
                   label={intl.formatMessage({
                     defaultMessage: "Send shipment details to customer",
                     description: "checkbox"
@@ -440,6 +539,9 @@ const OrderFulfillPage: React.FC<OrderFulfillPageProps> = props => {
                 />
               </CardActions>
             </Card>
+            {!!errors?.find(
+              err => err.code === OrderErrorCode.MISSED_DIGITAL_CONTENT
+            ) && <FormattedMessage defaultMessage="No digital file" />}
             <SaveButtonBar
               disabled={disabled}
               labels={{

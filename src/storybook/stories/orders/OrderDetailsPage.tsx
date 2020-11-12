@@ -34,6 +34,7 @@ const props: Omit<OrderDetailsPageProps, "classes"> = {
   onProfileView: () => undefined,
   onShippingAddressEdit: undefined,
   order,
+  onOrderLineUpdate: undefined,
   userPermissions: adminUserPermissions
 };
 

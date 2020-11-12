@@ -5,7 +5,8 @@ import { TypedMutation } from "../mutations";
 import {
   fragmentAddress,
   fragmentOrderDetails,
-  fragmentOrderEvent
+  fragmentOrderEvent,
+  fragmentOrderLine
 } from "./queries";
 import { OrderAddNote, OrderAddNoteVariables } from "./types/OrderAddNote";
 import { OrderCancel, OrderCancelVariables } from "./types/OrderCancel";
@@ -43,6 +44,8 @@ import {
 import { OrderLinesAdd, OrderLinesAddVariables } from "./types/OrderLinesAdd";
 import {
   OrderLineUpdate,
+  OrderLineUpdateDigitalFile,
+  OrderLineUpdateDigitalFileVariables,
   OrderLineUpdateVariables
 } from "./types/OrderLineUpdate";
 import {
@@ -454,3 +457,31 @@ export const useOrderFulfill = makeMutation<
   FulfillOrder,
   FulfillOrderVariables
 >(fulfillOrder);
+
+export const useOrderLineUpdate = makeMutation<
+  OrderLineUpdate,
+  OrderLineUpdateVariables
+>(orderLineUpdateMutation);
+
+const orderLineUpdateDigitalFileMutation = gql`
+  ${fragmentOrderLine}
+  ${orderErrorFragment}
+  mutation OrderLineUpdateDigitalContent(
+    $id: ID!
+    $input: BitsDigitalContentCreateInput!
+  ) {
+    orderLineUpdateDigitalContent(id: $id, input: $input) {
+      errors {
+        ...OrderErrorFragment
+      }
+      line {
+        ...OrderLineFragment
+      }
+    }
+  }
+`;
+
+export const useOrderLineUpdateDigital = makeMutation<
+  OrderLineUpdateDigitalFile,
+  OrderLineUpdateDigitalFileVariables
+>(orderLineUpdateDigitalFileMutation);

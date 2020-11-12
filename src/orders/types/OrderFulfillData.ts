@@ -48,6 +48,8 @@ export interface OrderFulfillData_order_lines_thumbnail {
 export interface OrderFulfillData_order_lines {
   __typename: "OrderLine";
   id: string;
+  isDigital?: boolean;
+  digitalFileUrl?: any;
   isShippingRequired: boolean;
   productName: string;
   quantity: number;
