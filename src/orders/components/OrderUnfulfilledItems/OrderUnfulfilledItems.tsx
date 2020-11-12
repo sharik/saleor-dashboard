@@ -49,6 +49,9 @@ const useStyles = makeStyles(
     },
     table: {
       tableLayout: "fixed"
+    },
+    fileField: {
+      display: "none"
     }
   },
   { name: "OrderUnfulfilledItems" }
@@ -58,13 +61,27 @@ interface OrderUnfulfilledItemsProps {
   canFulfill: boolean;
   lines: OrderDetails_order_lines[];
   onFulfill: () => void;
+  onOrderLineUpdate?(id: string, data: any);
 }
 
 const OrderUnfulfilledItems: React.FC<OrderUnfulfilledItemsProps> = props => {
-  const { canFulfill, lines, onFulfill } = props;
+  const { canFulfill, lines, onFulfill, onOrderLineUpdate } = props;
   const classes = useStyles(props);
 
   const intl = useIntl();
+
+  const upload = React.useRef(null);
+
+  const handleUpload = function(line, file) {
+    const reader = new FileReader();
+    reader.onload = event => {
+      onOrderLineUpdate(line.id, {
+        digitalFile: event.target.result as string,
+        quantity: line.quantity
+      });
+    };
+    reader.readAsDataURL(file);
+  };
 
   return (
     <Card>
@@ -115,6 +132,12 @@ const OrderUnfulfilledItems: React.FC<OrderUnfulfilledItemsProps> = props => {
                 description="order line total price"
               />
             </TableCell>
+            <TableCell className={classes.colTotal}>
+              <FormattedMessage
+                defaultMessage="DigitalFile"
+                description="digital file"
+              />
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -158,6 +181,32 @@ const OrderUnfulfilledItems: React.FC<OrderUnfulfilledItemsProps> = props => {
                   />
                 ) : (
                   <Skeleton />
+                )}
+              </TableCell>
+              <TableCell className={classes.colTotal}>
+                {line.digitalFileUrl && <a href={line.digitalFileUrl}>Link</a>}
+                {maybe(() => line.isDigital && !line.digitalFileUrl) && (
+                  <>
+                    <Button
+                      onClick={() => upload.current.click()}
+                      variant="text"
+                      color="primary"
+                      data-tc="button-upload"
+                    >
+                      Upload
+                    </Button>
+
+                    <input
+                      className={classes.fileField}
+                      id={maybe(() => line.id)}
+                      onChange={event =>
+                        handleUpload(line, event.target.files.item(0))
+                      }
+                      type="file"
+                      ref={upload}
+                      accept="image/*,application/pdf"
+                    />
+                  </>
                 )}
               </TableCell>
             </TableRow>

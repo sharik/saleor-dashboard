@@ -2,7 +2,16 @@
 /* eslint-disable */
 // This file was automatically generated and should not be edited.
 
-import { OrderLineInput, OrderErrorCode, OrderEventsEmailsEnum, OrderEventsEnum, FulfillmentStatus, PaymentChargeStatusEnum, OrderStatus, OrderAction } from "./../../types/globalTypes";
+import {
+  OrderErrorCode,
+  OrderEventsEmailsEnum,
+  OrderEventsEnum,
+  FulfillmentStatus,
+  PaymentChargeStatusEnum,
+  OrderStatus,
+  OrderAction,
+  OrderLineInput
+} from "./../../types/globalTypes";
 
 // ====================================================
 // GraphQL mutation operation: OrderLineUpdate
@@ -286,4 +295,14 @@ export interface OrderLineUpdate {
 export interface OrderLineUpdateVariables {
   id: string;
   input: OrderLineInput;
+}
+
+
+export interface OrderLineAddDigitalFile {
+  orderLineAddDigitalFile: OrderLineUpdate_draftOrderLineUpdate | null;
+}
+
+export interface OrderLineAddDigitalFileVariables {
+  lineId: string;
+  file: any;
 }

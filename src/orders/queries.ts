@@ -62,6 +62,8 @@ export const fragmentOrderLine = gql`
     productSku
     quantity
     quantityFulfilled
+    isDigital
+    digitalFileUrl
     unitPrice {
       gross {
         amount

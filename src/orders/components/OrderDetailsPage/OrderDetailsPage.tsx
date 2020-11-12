@@ -62,6 +62,7 @@ export interface OrderDetailsPageProps extends UserPermissionProps {
   onOrderCancel();
   onNoteAdd(data: HistoryFormData);
   onProfileView();
+  onOrderLineUpdate(id: string, data: any);
 }
 
 const OrderDetailsPage: React.FC<OrderDetailsPageProps> = props => {
@@ -77,6 +78,7 @@ const OrderDetailsPage: React.FC<OrderDetailsPageProps> = props => {
     onOrderFulfill,
     onPaymentCapture,
     onPaymentPaid,
+    onOrderLineUpdate,
     onPaymentRefund,
     onPaymentVoid,
     onShippingAddressEdit,
@@ -133,6 +135,7 @@ const OrderDetailsPage: React.FC<OrderDetailsPageProps> = props => {
               canFulfill={canFulfill}
               lines={unfulfilled}
               onFulfill={onOrderFulfill}
+              onOrderLineUpdate={onOrderLineUpdate}
             />
           )}
           {renderCollection(

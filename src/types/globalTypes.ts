@@ -1088,6 +1088,7 @@ export interface OrderLineCreateInput {
 
 export interface OrderLineInput {
   quantity: number;
+  digitalFile?: any;
 }
 
 export interface OrderSortingInput {

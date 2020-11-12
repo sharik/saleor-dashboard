@@ -140,6 +140,8 @@ export interface OrderDetails_order_lines {
   quantityFulfilled: number;
   unitPrice: OrderDetails_order_lines_unitPrice | null;
   thumbnail: OrderDetails_order_lines_thumbnail | null;
+  isDigital?: boolean;
+  digitalFileUrl?: string | null;
 }
 
 export interface OrderDetails_order_shippingAddress_country {
