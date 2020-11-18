@@ -49,6 +49,13 @@ const useStyles = makeStyles(
       textAlign: "right",
       width: 120
     },
+    colDigital: {
+      textAlign: "center",
+      width: 120
+    },
+    fileField: {
+      display: "none"
+    },
     statusBar: {
       paddingTop: 0
     },
@@ -63,6 +70,7 @@ interface OrderUnfulfilledItemsProps {
   canFulfill: boolean;
   lines: OrderDetails_order_lines[];
   onFulfill: () => void;
+  onOrderLineUpdate?(id: string, data: any);
 }
 
 const OrderUnfulfilledItems: React.FC<OrderUnfulfilledItemsProps> = props => {
@@ -70,6 +78,7 @@ const OrderUnfulfilledItems: React.FC<OrderUnfulfilledItemsProps> = props => {
   const classes = useStyles(props);
 
   const intl = useIntl();
+  const hasDigital = lines.filter(line => line.isDigital).length > 0;
 
   return (
     <Card>
@@ -126,6 +135,14 @@ const OrderUnfulfilledItems: React.FC<OrderUnfulfilledItemsProps> = props => {
                 description="order line total price"
               />
             </TableCell>
+            {hasDigital && (
+              <TableCell className={classes.colDigital}>
+                <FormattedMessage
+                  defaultMessage="DigitalFile"
+                  description="digital file"
+                />
+              </TableCell>
+            )}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -174,6 +191,13 @@ const OrderUnfulfilledItems: React.FC<OrderUnfulfilledItemsProps> = props => {
                   <Skeleton />
                 )}
               </TableCell>
+              {hasDigital && (
+                <TableCell className={classes.colDigital}>
+                  {line.digitalFileUrl && (
+                    <a href={line.digitalFileUrl}>Link</a>
+                  )}
+                </TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>

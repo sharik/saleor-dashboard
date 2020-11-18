@@ -192,6 +192,8 @@ const orderFulfillData = gql`
       id
       lines {
         id
+        isDigital
+        digitalFileUrl
         isShippingRequired
         productName
         quantity

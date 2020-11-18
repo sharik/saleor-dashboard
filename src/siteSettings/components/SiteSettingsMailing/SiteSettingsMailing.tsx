@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import CardTitle from "@saleor/components/CardTitle";
+import { ControlledCheckbox } from "@saleor/components/ControlledCheckbox";
 import FormSpacer from "@saleor/components/FormSpacer";
 import Hr from "@saleor/components/Hr";
 import { ShopErrorFragment } from "@saleor/fragments/types/ShopErrorFragment";
@@ -16,6 +17,7 @@ export interface SiteSettingsMailingFormData {
   defaultMailSenderName: string;
   defaultMailSenderAddress: string;
   customerSetPasswordUrl: string;
+  automaticFulfillmentDigitalProducts: boolean;
 }
 interface SiteSettingsMailingProps {
   data: SiteSettingsMailingFormData;
@@ -131,6 +133,20 @@ const SiteSettingsMailing: React.FC<SiteSettingsMailingProps> = props => {
             })
           }
           value={data.customerSetPasswordUrl}
+          onChange={onChange}
+        />
+        <FormSpacer />
+        <Hr />
+        <FormSpacer />
+        <ControlledCheckbox
+          checked={data.automaticFulfillmentDigitalProducts}
+          disabled={disabled}
+          label={intl.formatMessage({
+            defaultMessage:
+              "Enable automatic fulfillment for all digital products.",
+            description: "switch button"
+          })}
+          name="automaticFulfillmentDigitalProducts"
           onChange={onChange}
         />
       </CardContent>

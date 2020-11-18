@@ -76,6 +76,7 @@ export interface OrderDetailsPageProps extends UserPermissionProps {
   onInvoiceGenerate();
   onInvoiceSend(invoiceId: string);
   onSubmit(data: MetadataFormData): SubmitPromise;
+  onOrderLineUpdate(id: string, data: any);
 }
 
 const OrderDetailsPage: React.FC<OrderDetailsPageProps> = props => {

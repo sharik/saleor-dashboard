@@ -5,6 +5,7 @@ import {
 import {
   fragmentOrderDetails,
   fragmentOrderEvent,
+  fragmentOrderLine,
   invoiceFragment
 } from "@saleor/fragments/orders";
 import makeMutation from "@saleor/hooks/makeMutation";
@@ -55,6 +56,8 @@ import {
 import { OrderLinesAdd, OrderLinesAddVariables } from "./types/OrderLinesAdd";
 import {
   OrderLineUpdate,
+  OrderLineUpdateDigitalFile,
+  OrderLineUpdateDigitalFileVariables,
   OrderLineUpdateVariables
 } from "./types/OrderLineUpdate";
 import {
@@ -496,3 +499,31 @@ export const TypedInvoiceEmailSendMutation = TypedMutation<
   InvoiceEmailSend,
   InvoiceEmailSendVariables
 >(invoiceEmailSendMutation);
+
+export const useOrderLineUpdate = makeMutation<
+  OrderLineUpdate,
+  OrderLineUpdateVariables
+>(orderLineUpdateMutation);
+
+const orderLineUpdateDigitalFileMutation = gql`
+  ${fragmentOrderLine}
+  ${orderErrorFragment}
+  mutation OrderLineUpdateDigitalContent(
+    $id: ID!
+    $input: BitsDigitalContentCreateInput!
+  ) {
+    orderLineUpdateDigitalContent(id: $id, input: $input) {
+      errors {
+        ...OrderErrorFragment
+      }
+      line {
+        ...OrderLineFragment
+      }
+    }
+  }
+`;
+
+export const useOrderLineUpdateDigital = makeMutation<
+  OrderLineUpdateDigitalFile,
+  OrderLineUpdateDigitalFileVariables
+>(orderLineUpdateDigitalFileMutation);

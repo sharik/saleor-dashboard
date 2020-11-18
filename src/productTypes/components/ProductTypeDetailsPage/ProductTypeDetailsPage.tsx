@@ -37,6 +37,7 @@ interface ChoiceType {
 export interface ProductTypeForm extends MetadataFormData {
   name: string;
   hasVariants: boolean;
+  isDigital: boolean;
   isShippingRequired: boolean;
   taxType: string;
   productAttributes: ChoiceType[];
@@ -109,6 +110,10 @@ const ProductTypeDetailsPage: React.FC<ProductTypeDetailsPageProps> = ({
     hasVariants:
       maybe(() => productType.hasVariants) !== undefined
         ? productType.hasVariants
+        : false,
+    isDigital:
+      maybe(() => productType.isDigital) !== undefined
+        ? productType.isDigital
         : false,
     isShippingRequired:
       maybe(() => productType.isShippingRequired) !== undefined

@@ -49,6 +49,7 @@ export interface SiteSettings_shop_domain {
 
 export interface SiteSettings_shop {
   __typename: "Shop";
+  automaticFulfillmentDigitalProducts: boolean;
   authorizationKeys: (SiteSettings_shop_authorizationKeys | null)[];
   companyAddress: SiteSettings_shop_companyAddress | null;
   countries: SiteSettings_shop_countries[];

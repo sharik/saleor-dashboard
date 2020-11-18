@@ -103,6 +103,8 @@ export interface OrderDetails_order_fulfillments_lines_orderLine {
   __typename: "OrderLine";
   id: string;
   isShippingRequired: boolean;
+  isDigital?: boolean;
+  digitalFileUrl?: string;
   variant: OrderDetails_order_fulfillments_lines_orderLine_variant | null;
   productName: string;
   productSku: string;
@@ -183,6 +185,8 @@ export interface OrderDetails_order_lines {
   quantityFulfilled: number;
   unitPrice: OrderDetails_order_lines_unitPrice | null;
   thumbnail: OrderDetails_order_lines_thumbnail | null;
+  isDigital?: boolean;
+  digitalFileUrl?: string | null;
 }
 
 export interface OrderDetails_order_shippingAddress_country {

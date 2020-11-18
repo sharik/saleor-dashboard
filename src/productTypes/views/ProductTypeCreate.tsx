@@ -44,6 +44,7 @@ export const ProductTypeCreate: React.FC = () => {
             variables: {
               input: {
                 hasVariants: false,
+                isDigital: formData.isDigital,
                 isShippingRequired: formData.isShippingRequired,
                 name: formData.name,
                 taxCode: formData.taxType,

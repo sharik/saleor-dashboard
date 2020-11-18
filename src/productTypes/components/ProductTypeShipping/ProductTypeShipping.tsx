@@ -10,6 +10,7 @@ interface ProductTypeShippingProps {
   data: {
     isShippingRequired: boolean;
     weight: number | null;
+    isDigital: boolean;
   };
   weightUnit: string;
   disabled: boolean;
@@ -57,6 +58,18 @@ const ProductTypeShipping: React.FC<ProductTypeShippingProps> = ({
             })}
             type="number"
             value={data.weight}
+            onChange={onChange}
+          />
+        )}
+        {!data.isShippingRequired && (
+          <ControlledCheckbox
+            checked={data.isDigital}
+            disabled={disabled}
+            label={intl.formatMessage({
+              defaultMessage: "Is this product digital?",
+              description: "switch button"
+            })}
+            name="isDigital"
             onChange={onChange}
           />
         )}

@@ -549,6 +549,7 @@ export const productType: ProductTypeDetails_productType = {
   __typename: "ProductType" as "ProductType",
   hasVariants: false,
   id: "UHJvZHVjdFR5cGU6NQ==",
+  isDigital: false,
   isShippingRequired: false,
   metadata: [
     {

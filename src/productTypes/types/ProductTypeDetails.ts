@@ -57,6 +57,7 @@ export interface ProductTypeDetails_productType {
   id: string;
   name: string;
   hasVariants: boolean;
+  isDigital: boolean;
   isShippingRequired: boolean;
   taxType: ProductTypeDetails_productType_taxType | null;
   metadata: (ProductTypeDetails_productType_metadata | null)[];

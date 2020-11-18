@@ -29,6 +29,10 @@ const useStyles = makeStyles(
     clickableRow: {
       cursor: "pointer"
     },
+    colDigital: {
+      textAlign: "center",
+      width: 120
+    },
     colName: {
       width: "auto"
     },
@@ -100,6 +104,13 @@ const OrderFulfillment: React.FC<OrderFulfillmentProps> = props => {
   const quantity = lines
     ? lines.map(line => line.quantity).reduce((prev, curr) => prev + curr, 0)
     : "...";
+
+  const hasDigital = lines
+    ? lines.filter(line => line.orderLine.isDigital).length > 0
+    : false;
+  const hasNoDigital = lines
+    ? lines.filter(line => !line.orderLine.isDigital).length > 0 && !hasDigital
+    : true;
 
   return (
     <Card>
@@ -194,6 +205,14 @@ const OrderFulfillment: React.FC<OrderFulfillmentProps> = props => {
                 description="order line total price"
               />
             </TableCell>
+            {hasDigital && (
+              <TableCell className={classes.colDigital}>
+                <FormattedMessage
+                  defaultMessage="DigitalFile"
+                  description="digital file"
+                />
+              </TableCell>
+            )}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -237,6 +256,13 @@ const OrderFulfillment: React.FC<OrderFulfillmentProps> = props => {
                   <Skeleton />
                 )}
               </TableCell>
+              {hasDigital && (
+                <TableCell className={classes.colDigital}>
+                  {line.orderLine.digitalFileUrl && (
+                    <a href={line.orderLine.digitalFileUrl}>Link</a>
+                  )}
+                </TableCell>
+              )}
             </TableRow>
           ))}
           <TableRow>
@@ -282,26 +308,30 @@ const OrderFulfillment: React.FC<OrderFulfillmentProps> = props => {
           </TableRow>
         </TableBody>
       </ResponsiveTable>
-      {status === FulfillmentStatus.FULFILLED && !fulfillment.trackingNumber && (
-        <CardActions>
-          <Button color="primary" onClick={onTrackingCodeAdd}>
-            <FormattedMessage
-              defaultMessage="Add tracking"
-              description="fulfillment group tracking number"
-            />
-          </Button>
-        </CardActions>
-      )}
-      {status === FulfillmentStatus.FULFILLED && fulfillment.trackingNumber && (
-        <CardActions>
-          <Button color="primary" onClick={onTrackingCodeAdd}>
-            <FormattedMessage
-              defaultMessage="Edit tracking"
-              description="fulfillment group tracking number"
-            />
-          </Button>
-        </CardActions>
-      )}
+      {status === FulfillmentStatus.FULFILLED &&
+        !fulfillment.trackingNumber &&
+        hasNoDigital && (
+          <CardActions>
+            <Button color="primary" onClick={onTrackingCodeAdd}>
+              <FormattedMessage
+                defaultMessage="Add tracking"
+                description="fulfillment group tracking number"
+              />
+            </Button>
+          </CardActions>
+        )}
+      {status === FulfillmentStatus.FULFILLED &&
+        fulfillment.trackingNumber &&
+        hasNoDigital && (
+          <CardActions>
+            <Button color="primary" onClick={onTrackingCodeAdd}>
+              <FormattedMessage
+                defaultMessage="Edit tracking"
+                description="fulfillment group tracking number"
+              />
+            </Button>
+          </CardActions>
+        )}
     </Card>
   );
 };

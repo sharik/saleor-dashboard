@@ -541,6 +541,7 @@ export enum OrderErrorCode {
   FULFILL_ORDER_LINE = "FULFILL_ORDER_LINE",
   GRAPHQL_ERROR = "GRAPHQL_ERROR",
   INSUFFICIENT_STOCK = "INSUFFICIENT_STOCK",
+  MISSED_DIGITAL_CONTENT = "MISSED_DIGITAL_CONTENT",
   INVALID = "INVALID",
   NOT_EDITABLE = "NOT_EDITABLE",
   NOT_FOUND = "NOT_FOUND",
@@ -1262,6 +1263,7 @@ export interface OrderLineCreateInput {
 
 export interface OrderLineInput {
   quantity: number;
+  digitalFile?: any;
 }
 
 export interface OrderSortingInput {

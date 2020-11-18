@@ -349,3 +349,37 @@ export interface OrderLineUpdateVariables {
   id: string;
   input: OrderLineInput;
 }
+
+export interface OrderLine_OrderLineUpdateDigital_order_lines {
+  __typename: "OrderLine";
+  id: string;
+  isShippingRequired: boolean;
+  isDigital: boolean;
+  digitalFileUrl: any;
+  productName: string;
+  productSku: string;
+  quantity: number;
+  quantityFulfilled: number;
+  unitPrice: OrderLineUpdate_draftOrderLineUpdate_order_lines_unitPrice | null;
+  thumbnail: OrderLineUpdate_draftOrderLineUpdate_order_lines_thumbnail | null;
+}
+
+export interface BitsDigitalContentUpdate {
+  __typename: "BitsDigitalContentUpdate";
+  errors: OrderLineUpdate_draftOrderLineUpdate_errors[];
+  line: OrderLine_OrderLineUpdateDigital_order_lines | null;
+}
+
+export interface OrderLineUpdateDigitalFile {
+  orderLineUpdateDigitalContent: BitsDigitalContentUpdate | null;
+}
+
+export interface OrderLineDigitalFileInput {
+  file: any;
+  name: string;
+}
+
+export interface OrderLineUpdateDigitalFileVariables {
+  id: string;
+  input: OrderLineDigitalFileInput;
+}
