@@ -3141,6 +3141,8 @@ type OrderLine implements Node {
   variantName: String!
   productSku: String!
   isShippingRequired: Boolean!
+  isDigital: Boolean
+  digitalFileUrl: String
   quantity: Int!
   quantityFulfilled: Int!
   taxRate: Float!

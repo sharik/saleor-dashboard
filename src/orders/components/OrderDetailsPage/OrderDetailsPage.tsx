@@ -137,120 +137,119 @@ const OrderDetailsPage: React.FC<OrderDetailsPageProps> = props => {
   };
 
   return (
-    <Form initial={initial} onSubmit={handleSubmit}>
-      {({ change, data, hasChanged, submit }) => {
-        const changeMetadata = makeMetadataChangeHandler(change);
-
-        return (
-          <Container>
-            <AppHeader onBack={onBack}>
-              {intl.formatMessage(sectionNames.orders)}
-            </AppHeader>
-            <PageHeader
-              className={classes.header}
-              inline
-              title={maybe(() => order.number) ? "#" + order.number : undefined}
-            >
-              {canCancel && (
-                <CardMenu
-                  menuItems={[
-                    {
-                      label: intl.formatMessage({
-                        defaultMessage: "Cancel order",
-                        description: "button"
-                      }),
-                      onSelect: onOrderCancel
-                    }
-                  ]}
-                />
-              )}
-            </PageHeader>
-            <div className={classes.date}>
-              {order && order.created ? (
-                <Typography variant="caption">
-                  <DateTime date={order.created} />
-                </Typography>
-              ) : (
-                <Skeleton style={{ width: "10em" }} />
-              )}
-            </div>
-            <Grid>
-              <div>
-                {unfulfilled.length > 0 && (
-                  <OrderUnfulfilledItems
-                    canFulfill={canFulfill}
-                    lines={unfulfilled}
-                    onFulfill={onOrderFulfill}
-                  />
-                )}
-                {renderCollection(
-                  maybe(() => order.fulfillments),
-                  (fulfillment, fulfillmentIndex) => (
-                    <React.Fragment
-                      key={maybe(() => fulfillment.id, "loading")}
-                    >
-                      {!(
-                        unfulfilled.length === 0 && fulfillmentIndex === 0
-                      ) && <CardSpacer />}
-                      <OrderFulfillment
-                        fulfillment={fulfillment}
-                        orderNumber={maybe(() => order.number)}
-                        onOrderFulfillmentCancel={() =>
-                          onFulfillmentCancel(fulfillment.id)
-                        }
-                        onTrackingCodeAdd={() =>
-                          onFulfillmentTrackingNumberUpdate(fulfillment.id)
-                        }
-                      />
-                    </React.Fragment>
-                  )
-                )}
-                <CardSpacer />
-                <OrderPayment
-                  order={order}
-                  onCapture={onPaymentCapture}
-                  onMarkAsPaid={onPaymentPaid}
-                  onRefund={onPaymentRefund}
-                  onVoid={onPaymentVoid}
-                />
-                <CardSpacer />
-                <Metadata data={data} onChange={changeMetadata} />
-                <OrderHistory
-                  history={maybe(() => order.events)}
-                  onNoteAdd={onNoteAdd}
-                />
-              </div>
-              <div>
-                <OrderCustomer
-                  canEditAddresses={canEditAddresses}
-                  canEditCustomer={false}
-                  order={order}
-                  userPermissions={userPermissions}
-                  onBillingAddressEdit={onBillingAddressEdit}
-                  onShippingAddressEdit={onShippingAddressEdit}
-                  onProfileView={onProfileView}
-                />
-                <CardSpacer />
-                <OrderInvoiceList
-                  invoices={order?.invoices}
-                  onInvoiceClick={onInvoiceClick}
-                  onInvoiceGenerate={onInvoiceGenerate}
-                  onInvoiceSend={onInvoiceSend}
-                />
-                <CardSpacer />
-                <OrderCustomerNote note={maybe(() => order.customerNote)} />
-              </div>
-            </Grid>
-            <SaveButtonBar
-              onCancel={onBack}
-              onSave={submit}
-              state={saveButtonBarState}
-              disabled={disabled || !hasChanged}
+    <Container>
+      <AppHeader onBack={onBack}>
+        {intl.formatMessage(sectionNames.orders)}
+      </AppHeader>
+      <PageHeader
+        className={classes.header}
+        inline
+        title={maybe(() => order.number) ? "#" + order.number : undefined}
+      >
+        {canCancel && (
+          <CardMenu
+            menuItems={[
+              {
+                label: intl.formatMessage({
+                  defaultMessage: "Cancel order",
+                  description: "button"
+                }),
+                onSelect: onOrderCancel
+              }
+            ]}
+          />
+        )}
+      </PageHeader>
+      <div className={classes.date}>
+        {order && order.created ? (
+          <Typography variant="caption">
+            <DateTime date={order.created} />
+          </Typography>
+        ) : (
+          <Skeleton style={{ width: "10em" }} />
+        )}
+      </div>
+      <Grid>
+        <div>
+          {unfulfilled.length > 0 && (
+            <OrderUnfulfilledItems
+              canFulfill={canFulfill}
+              lines={unfulfilled}
+              onFulfill={onOrderFulfill}
             />
-          </Container>
-        );
-      }}
-    </Form>
+          )}
+          {renderCollection(
+            maybe(() => order.fulfillments),
+            (fulfillment, fulfillmentIndex) => (
+              <React.Fragment key={maybe(() => fulfillment.id, "loading")}>
+                {!(unfulfilled.length === 0 && fulfillmentIndex === 0) && (
+                  <CardSpacer />
+                )}
+                <OrderFulfillment
+                  fulfillment={fulfillment}
+                  orderNumber={maybe(() => order.number)}
+                  onOrderFulfillmentCancel={() =>
+                    onFulfillmentCancel(fulfillment.id)
+                  }
+                  onTrackingCodeAdd={() =>
+                    onFulfillmentTrackingNumberUpdate(fulfillment.id)
+                  }
+                />
+              </React.Fragment>
+            )
+          )}
+          <CardSpacer />
+          <OrderPayment
+            order={order}
+            onCapture={onPaymentCapture}
+            onMarkAsPaid={onPaymentPaid}
+            onRefund={onPaymentRefund}
+            onVoid={onPaymentVoid}
+          />
+          <CardSpacer />
+          <Form initial={initial} onSubmit={handleSubmit}>
+            {({ change, data, hasChanged, submit }) => {
+              const changeMetadata = makeMetadataChangeHandler(change);
+              return (
+                <>
+                  <Metadata data={data} onChange={changeMetadata} />
+                  <SaveButtonBar
+                    onCancel={onBack}
+                    onSave={submit}
+                    state={saveButtonBarState}
+                    disabled={disabled || !hasChanged}
+                  />
+                </>
+              );
+            }}
+          </Form>
+          <OrderHistory
+            history={maybe(() => order.events)}
+            onNoteAdd={onNoteAdd}
+          />
+        </div>
+        <div>
+          <OrderCustomer
+            canEditAddresses={canEditAddresses}
+            canEditCustomer={false}
+            order={order}
+            userPermissions={userPermissions}
+            onBillingAddressEdit={onBillingAddressEdit}
+            onShippingAddressEdit={onShippingAddressEdit}
+            onProfileView={onProfileView}
+          />
+          <CardSpacer />
+          <OrderInvoiceList
+            invoices={order?.invoices}
+            onInvoiceClick={onInvoiceClick}
+            onInvoiceGenerate={onInvoiceGenerate}
+            onInvoiceSend={onInvoiceSend}
+          />
+          <CardSpacer />
+          <OrderCustomerNote note={maybe(() => order.customerNote)} />
+        </div>
+      </Grid>
+    </Container>
   );
 };
 OrderDetailsPage.displayName = "OrderDetailsPage";

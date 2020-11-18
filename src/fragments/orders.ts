@@ -25,6 +25,8 @@ export const fragmentOrderLine = gql`
   fragment OrderLineFragment on OrderLine {
     id
     isShippingRequired
+    isDigital
+    digitalFileUrl
     variant {
       id
       product {
