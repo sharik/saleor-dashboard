@@ -8,9 +8,9 @@ import { useIntl } from "react-intl";
 
 interface ProductTypeShippingProps {
   data: {
+    isDigital: boolean;
     isShippingRequired: boolean;
     weight: number | null;
-    isDigital: boolean;
   };
   weightUnit: string;
   disabled: boolean;

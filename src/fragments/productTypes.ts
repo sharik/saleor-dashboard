@@ -8,6 +8,7 @@ export const productTypeFragment = gql`
     id
     name
     hasVariants
+    isDigital
     isShippingRequired
     taxType {
       description
