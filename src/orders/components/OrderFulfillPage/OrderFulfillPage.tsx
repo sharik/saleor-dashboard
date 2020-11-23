@@ -540,15 +540,27 @@ const OrderFulfillPage: React.FC<OrderFulfillPageProps> = props => {
                 </TableBody>
               </ResponsiveTable>
               <CardActions className={classes.actionBar}>
-                <ControlledCheckbox
-                  checked={hasDigital ? false : data.sendInfo}
-                  label={intl.formatMessage({
-                    defaultMessage: "Send shipment details to customer",
-                    description: "checkbox"
-                  })}
-                  name="sendInfo"
-                  onChange={change}
-                />
+                {hasDigital ? (
+                  <ControlledCheckbox
+                    checked={data.sendInfo}
+                    label={intl.formatMessage({
+                      defaultMessage: "Send digital file to customer",
+                      description: "checkbox"
+                    })}
+                    name="sendInfo"
+                    onChange={change}
+                  />
+                ) : (
+                  <ControlledCheckbox
+                    checked={data.sendInfo}
+                    label={intl.formatMessage({
+                      defaultMessage: "Send shipment details to customer",
+                      description: "checkbox"
+                    })}
+                    name="sendInfo"
+                    onChange={change}
+                  />
+                )}
               </CardActions>
             </Card>
             {!!errors?.find(
