@@ -141,7 +141,7 @@ export interface OrderFulfillPageProps {
 }
 
 const initialFormData: OrderFulfillFormData = {
-  sendInfo: true
+  sendInfo: false
 };
 
 function getRemainingQuantity(line: OrderFulfillData_order_lines): number {
